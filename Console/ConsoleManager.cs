@@ -16,7 +16,8 @@ namespace PineappleMod.Console
         public GameObject keyboard;
 
 
-        public TextMeshPro consoleText;
+        public TextMeshPro inputText;
+        public TextMeshPro outputText;
         public List<GameObject> keys = new List<GameObject>();
 
         public GameObject backspace;
@@ -33,11 +34,14 @@ namespace PineappleMod.Console
 
         public void Setup() {
             console = Plugin.Instance.console.transform.Find("Screen").gameObject;
-            consoleText = console.transform.Find("Input").GetComponent<TextMeshPro>();
-            keyboard = Plugin.Instance.console.transform.Find("Keyboard").gameObject;
+            inputText = console.transform.Find("Input").GetComponent<TextMeshPro>();
+            outputText = console.transform.Find("Output").GetComponent<TextMeshPro>();
 
-            if (!console || !consoleText || !keyboard) {
-                ErrorOccur(new object[] { console, consoleText, keyboard, 37 });
+            keyboard = Plugin.Instance.console.transform.Find("Keyboard").gameObject;
+            keyboard.GetComponent<BoxCollider>()?.Destroy();
+
+            if (!console || !inputText || !keyboard) {
+                ErrorOccur(new object[] { console, inputText, keyboard, 37 });
                 return;
             }
 
@@ -52,10 +56,10 @@ namespace PineappleMod.Console
             var keybaord = keyboard.GetComponent<MeshRenderer>();
             keybaord.material = Plugin.Instance.pineappleBundle.LoadAsset<Material>("m_Menu Outer");
 
-            console.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
             keyboard.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
+            console.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
 
-            Logging.Info(console, consoleText, keyboard);
+            Logging.Info(console, inputText, keyboard);
 
             console.transform.localPosition = new Vector3(0, 0.25f, 0.7782f);
             console.transform.localRotation = Quaternion.Euler(270, 270, 0);
@@ -114,7 +118,8 @@ namespace PineappleMod.Console
             var enterKey = enter.AddComponent<Key>();
             enterKey.OnButtonPressedEvent += RunAndParseCommand;
 
-            consoleText.text = "> ";
+            inputText.text = "> ";
+            outputText.text = "Type a command to get started".ToUpper();
             Logging.Info("Success!", 96);
         }
 
@@ -127,16 +132,16 @@ namespace PineappleMod.Console
 
             value = shiftPressed ? value.ToUpper() : value.ToLower();
 
-            consoleText.text += value;
+            inputText.text += value;
 
             if (shiftPressed) OnShiftPressed();
         }
 
         public void OnBackspacePressed(string value = "")
         {
-            if (consoleText.text.Length > 1)
+            if (inputText.text.Length > 1)
             {
-                consoleText.text = consoleText.text.Substring(0, consoleText.text.Length - 1);
+                inputText.text = inputText.text.Substring(0, inputText.text.Length - 1);
             }
         }
 
@@ -150,8 +155,8 @@ namespace PineappleMod.Console
         }
 
         public void RunAndParseCommand(string value = "") {
-            if (consoleText.text.IsNullOrEmpty()) return;
-            consoleText.text = "> ";
+            if (inputText.text.IsNullOrEmpty()) return;
+            inputText.text = "> ";
             //Logic here
         }
     }

@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace PineappleMod.Console
 {
-    public class Key : MonoBehaviour
+    public class Key : MonoBehaviour // Decompiled from GorillaTag's code, please dont come after me.
     {
         public string characterString;
 
@@ -34,7 +34,7 @@ namespace PineappleMod.Console
 
         private MaterialPropertyBlock propBlock;
 
-        private void Start()
+        protected void Awake()
         {
             if (ButtonRenderer == null)
             {
@@ -45,7 +45,7 @@ namespace PineappleMod.Console
             pressTime = 0f;
         }
 
-        private void OnTriggerEnter(Collider collider)
+        protected void OnTriggerEnter(Collider collider)
         {
             if (!(collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() != null))
             {

@@ -11,15 +11,17 @@ namespace PineappleMod.Menu
     {
         public static MenuManager instance;
         public GameObject menu;
+        public bool callbacksOn = false;
         //protected void Start() => instance = this;
 
-        protected void Start() {
+        protected void Awake() {
             instance = this;
             Setup();
         }
 
         public void Setup()
         {
+            /* i'll set this up later, ill just hook this to the console for now.
             menu = Plugin.Instance.console.transform.Find("Menu").gameObject;
             menu.transform.SetParent(GorillaTagger.Instance.leftHandTransform, false);
 
@@ -44,20 +46,36 @@ namespace PineappleMod.Menu
             };
 
             menu.transform.localScale = Plugin.Instance.getConsoleScale();
-            menu.transform.rotation = Quaternion.Euler(0, 0, 0);
+            menu.transform.rotation = Quaternion.Euler(0, 0, 0);*/
 
+            Logging.Info("MenuManager started");
+        }
+
+        public void EnableMenuCallbacks() {
+            if (callbacksOn) return;
+            callbacksOn = true;
             GestureTracker.Instance.leftGrip.OnPressed += EnableMenu;
-            GestureTracker.Instance.leftGrip.OnReleased += DisableMenu;
-            Logging.Info("MenuManager started, menu initialized and button added.");
-            menu.SetActive(false);
+            GestureTracker.Instance.rightGrip.OnPressed += EnableMenu;
+        }
+
+        public void DisableMenuCallbacks()
+        {
+            if (!callbacksOn) return;
+            callbacksOn = false;
+            GestureTracker.Instance.leftGrip.OnPressed -= EnableMenu;
+            GestureTracker.Instance.rightGrip.OnPressed -= EnableMenu;
         }
 
         public void EnableMenu(InputTracker trakker) {
-            menu.SetActive(true);
+            //if (!GestureTracker.Instance.leftGrip.pressed || !GestureTracker.Instance.rightGrip.pressed) return;
+
+            ConsoleManager.Instance.console.SetActive(!ConsoleManager.Instance.console.activeSelf);
+            ConsoleManager.Instance.keyboard.SetActive(!ConsoleManager.Instance.console.activeSelf);
         }
 
         public void DisableMenu(InputTracker takker) {
-            menu.SetActive(false);
+            ConsoleManager.Instance.console.SetActive(false);
+            ConsoleManager.Instance.keyboard.SetActive(false);
         }
     }
 }
