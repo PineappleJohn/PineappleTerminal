@@ -4,6 +4,7 @@ using UnityEngine;
 using PineappleMod.Tools;
 using System;
 using GorillaNetworking;
+using GorillaExtensions;
 
 namespace PineappleMod.Console
 {
@@ -76,6 +77,7 @@ namespace PineappleMod.Console
                 {
                     var child = keyboard.transform.GetChild(i).gameObject;
                     child.layer = LayerMask.NameToLayer("GorillaInteractible");
+                    child.GetOrAddComponent<BoxCollider>().isTrigger = true;
 
                     Logging.Info($"Keyboard child: {i} : {child.name}");
 

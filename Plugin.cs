@@ -1,11 +1,7 @@
 ﻿using BepInEx;
 using UnityEngine;
-using System.IO;
-using System.Reflection;
 using PineappleMod.Tools;
 using System;
-using System.Collections;
-using PineappleMod.Tools;
 
 namespace PineappleMod
 {
@@ -21,10 +17,10 @@ namespace PineappleMod
 
         public GameObject m_Menu, m_Console, m_Gesture;
 
-        protected void Start()
+        protected void Awake()
         {
             Instance = this;
-            OnGameInit();
+            GorillaTagger.OnPlayerSpawned(OnGameInit);
         }
 
 
@@ -76,7 +72,7 @@ namespace PineappleMod
     {
         internal const string
             GUID = "John.PineappleMod",
-            Name = "Johns Pineapple Mod",
+            Name = "Pineapple Terminal",
             Version = "1.0.0";
     }
 }
