@@ -1,12 +1,10 @@
-﻿using GorillaTag;
-using Photon.Pun;
+﻿using GorillaExtensions;
+using GorillaTag;
+using PineappleMod.Tools;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace PineappleMod.Console
 {
@@ -28,14 +26,18 @@ namespace PineappleMod.Console
 
         public Renderer ButtonRenderer;
 
-        public ButtonColorSettings ButtonColorSettings;
+        public ButtonColorSettings ButtonColorSettings = new ButtonColorSettings();
 
         private float lastTestClick;
 
         private MaterialPropertyBlock propBlock;
 
-        protected void Awake()
+        public void Awake()
         {
+            ButtonColorSettings.PressedColor = Color.red;
+            ButtonColorSettings.UnpressedColor = Color.white;
+            ButtonColorSettings.PressedTime = 0.2f;
+
             if (ButtonRenderer == null)
             {
                 ButtonRenderer = GetComponent<Renderer>();
@@ -43,30 +45,35 @@ namespace PineappleMod.Console
 
             propBlock = new MaterialPropertyBlock();
             pressTime = 0f;
+
+            gameObject.layer = LayerMask.NameToLayer("GorillaInteractible");
+            gameObject.GetOrAddComponent<BoxCollider>().isTrigger = true;
         }
 
         protected void OnTriggerEnter(Collider collider)
         {
-            if (!(collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() != null))
-            {
-                return;
-            }
-
             GorillaTriggerColliderHandIndicator component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
             
-            PressButtonColourUpdate();
             if (component != null)
             {
+                PressButtonColourUpdate();
                 GorillaTagger.Instance.StartVibration(component.isLeftHand, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
                 GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, component.isLeftHand, 0.1f);
                 OnButtonPressedEvent?.Invoke(characterString);
             }
         }
 
+        public void TestClick() {
+            PressButtonColourUpdate();
+            GorillaTagger.Instance.StartVibration(false, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
+            GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, false, 0.1f);
+            OnButtonPressedEvent?.Invoke(characterString);
+        }
+
         public void PressButtonColourUpdate()
         {
-            propBlock.SetColor("_BaseColor", ButtonColorSettings.PressedColor);
-            propBlock.SetColor("_Color", ButtonColorSettings.PressedColor);
+            propBlock.SetColor("_BaseColor", Color.red);
+            propBlock.SetColor("_Color", Color.red);
             ButtonRenderer.SetPropertyBlock(propBlock);
             pressTime = Time.time;
             StartCoroutine(ButtonColorUpdate_Local());
@@ -75,8 +82,8 @@ namespace PineappleMod.Console
                 yield return new WaitForSeconds(ButtonColorSettings.PressedTime);
                 if (pressTime != 0f && Time.time > ButtonColorSettings.PressedTime + pressTime)
                 {
-                    propBlock.SetColor("_BaseColor", ButtonColorSettings.UnpressedColor);
-                    propBlock.SetColor("_Color", ButtonColorSettings.UnpressedColor);
+                    propBlock.SetColor("_BaseColor", Color.white);
+                    propBlock.SetColor("_Color", Color.white);
                     ButtonRenderer.SetPropertyBlock(propBlock);
                     pressTime = 0f;
                 }

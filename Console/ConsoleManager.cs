@@ -16,8 +16,8 @@ namespace PineappleMod.Console
         public GameObject keyboard;
 
 
-        public TextMeshPro inputText;
-        public TextMeshPro outputText;
+        public TextMeshPro consoleText;
+        public TextMeshPro returnText;
         public List<GameObject> keys = new List<GameObject>();
 
         public GameObject backspace;
@@ -27,21 +27,22 @@ namespace PineappleMod.Console
 
         public bool shiftPressed = false;
 
-        protected void Start() {
+        protected void Start()
+        {
             Instance = this;
             Setup();
         }
 
-        public void Setup() {
+        public void Setup()
+        {
             console = Plugin.Instance.console.transform.Find("Screen").gameObject;
-            inputText = console.transform.Find("Input").GetComponent<TextMeshPro>();
-            outputText = console.transform.Find("Output").GetComponent<TextMeshPro>();
-
+            consoleText = console.transform.Find("Input").GetComponent<TextMeshPro>();
+            returnText = console.transform.Find("Output").GetComponent<TextMeshPro>();
             keyboard = Plugin.Instance.console.transform.Find("Keyboard").gameObject;
-            keyboard.GetComponent<BoxCollider>()?.Destroy();
 
-            if (!console || !inputText || !keyboard) {
-                ErrorOccur(new object[] { console, inputText, keyboard, 37 });
+            if (!console || !consoleText || !keyboard)
+            {
+                ErrorOccur(new object[] { console, consoleText, keyboard, 37 });
                 return;
             }
 
@@ -56,10 +57,10 @@ namespace PineappleMod.Console
             var keybaord = keyboard.GetComponent<MeshRenderer>();
             keybaord.material = Plugin.Instance.pineappleBundle.LoadAsset<Material>("m_Menu Outer");
 
-            keyboard.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
             console.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
+            keyboard.transform.SetParent(GorillaTagger.Instance.bodyCollider.transform, false);
 
-            Logging.Info(console, inputText, keyboard);
+            Logging.Info(console, consoleText, keyboard);
 
             console.transform.localPosition = new Vector3(0, 0.25f, 0.7782f);
             console.transform.localRotation = Quaternion.Euler(270, 270, 0);
@@ -68,7 +69,7 @@ namespace PineappleMod.Console
             keyboard.transform.localPosition = new Vector3(0, -0.05f, 0.5782f);
             keyboard.transform.localRotation = Quaternion.Euler(300.132111f, 180f, 90f);
             keyboard.transform.localScale = new Vector3(13.2667866f, 21.2343521f, 2.71945715f);
-
+            
             Logging.Info($"keyboard has {keyboard.transform.childCount} direct children");
             for (int i = 0; i < keyboard.transform.childCount; i++)
             {
@@ -80,8 +81,6 @@ namespace PineappleMod.Console
                 for (int i = 0; i < keyboard.transform.childCount; i++)
                 {
                     var child = keyboard.transform.GetChild(i).gameObject;
-                    child.layer = LayerMask.NameToLayer("GorillaInteractible");
-                    child.GetOrAddComponent<BoxCollider>().isTrigger = true;
 
                     Logging.Info($"Keyboard child: {i} : {child.name}");
 
@@ -92,6 +91,7 @@ namespace PineappleMod.Console
                         case "Shift": shift = child.gameObject; break;
                         case "Space": space = child.gameObject; break;
                         default:
+                            Logging.Info($"Adding key: {child.name}");
                             var k = child.AddComponent<Key>();
                             k.characterString = shiftPressed ? child.name.ToUpper() : child.name.ToLower();
                             k.OnButtonPressedEvent += OnKeyPressed;
@@ -100,7 +100,8 @@ namespace PineappleMod.Console
                     }
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Logging.Fatal("Error init keyboard children / keys. ", e);
             }
 
@@ -112,36 +113,38 @@ namespace PineappleMod.Console
             var backspaceKey = backspace.AddComponent<Key>();
             backspaceKey.OnButtonPressedEvent += OnBackspacePressed;
 
-            var shiftKey = shift.AddComponent<Key>(); 
+            var shiftKey = shift.AddComponent<Key>();
             shiftKey.OnButtonPressedEvent += OnShiftPressed;
 
             var enterKey = enter.AddComponent<Key>();
             enterKey.OnButtonPressedEvent += RunAndParseCommand;
 
-            inputText.text = "> ";
-            outputText.text = "Type a command to get started".ToUpper();
+            consoleText.text = "> ";
+            returnText.text = "";
             Logging.Info("Success!", 96);
         }
 
-        public void ErrorOccur(object[] args) {
+        public void ErrorOccur(object[] args)
+        {
             Logging.Fatal($"An error occured with ConsoleManager, more details {args}");
         }
 
-        public void OnKeyPressed(string value) {
+        public void OnKeyPressed(string value)
+        {
             if (value.IsNullOrEmpty()) return;
 
             value = shiftPressed ? value.ToUpper() : value.ToLower();
 
-            inputText.text += value;
+            consoleText.text += value;
 
             if (shiftPressed) OnShiftPressed();
         }
 
         public void OnBackspacePressed(string value = "")
         {
-            if (inputText.text.Length > 1)
+            if (consoleText.text.Length > 1)
             {
-                inputText.text = inputText.text.Substring(0, inputText.text.Length - 1);
+                consoleText.text = consoleText.text.Substring(0, consoleText.text.Length - 1);
             }
         }
 
@@ -149,14 +152,16 @@ namespace PineappleMod.Console
         {
             shiftPressed = !shiftPressed;
 
-            foreach (GameObject key in keys) {
+            foreach (GameObject key in keys)
+            {
                 key.GetComponentInChildren<TextMeshPro>().text = shiftPressed ? key.name.ToUpper() : key.name.ToLower();
             }
         }
 
-        public void RunAndParseCommand(string value = "") {
-            if (inputText.text.IsNullOrEmpty()) return;
-            inputText.text = "> ";
+        public void RunAndParseCommand(string value = "")
+        {
+            if (consoleText.text.IsNullOrEmpty()) return;
+            consoleText.text = "> ";
             //Logic here
         }
     }

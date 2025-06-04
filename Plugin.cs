@@ -3,6 +3,7 @@ using UnityEngine;
 using PineappleMod.Tools;
 using System;
 using PineappleMod.Menu;
+using PineappleMod.Console;
 
 namespace PineappleMod
 {
@@ -24,14 +25,17 @@ namespace PineappleMod
             GorillaTagger.OnPlayerSpawned(OnGameInit);
         }
 
-        public void OnEnable() {
+        /*public void OnEnable() {
             MenuManager.instance.EnableMenuCallbacks();
+
+            //ConsoleManager.Instance.console.SetActive(MenuManager.instance.menuWasOn);
+            //ConsoleManager.Instance.keyboard.SetActive(MenuManager.instance.menuWasOn);
         }
 
         public void OnDisable() {
             MenuManager.instance.DisableMenuCallbacks();
             MenuManager.instance.DisableMenu(null);
-        }
+        }*/
 
 
         public void OnGameInit() // Lots of try/catch blocks so i can see if things init properly, might remove later
@@ -46,7 +50,6 @@ namespace PineappleMod
 
                 m_Menu = new GameObject("PineappleMenuManager"); // These namespaces are satisfying
                 m_Menu.AddComponent<Menu.MenuManager>();
-                MenuManager.instance.EnableMenuCallbacks();
 
                 m_Gesture = new GameObject("PineappleGestureTracker");
                 m_Gesture.AddComponent<GestureTracker>();
