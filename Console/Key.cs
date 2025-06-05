@@ -46,10 +46,9 @@ namespace PineappleMod.Console
 
         protected virtual void OnTriggerEnter(Collider collider)
         {
-            GorillaTriggerColliderHandIndicator component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
-            
-            if (component != null)
+            if (collider.gameObject == (GorillaTagger.Instance.leftHandTriggerCollider || GorillaTagger.Instance.rightHandTriggerCollider))
             {
+                var component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
                 PressButtonColourUpdate();
                 GorillaTagger.Instance.StartVibration(component.isLeftHand, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
                 GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, component.isLeftHand, 0.1f);
