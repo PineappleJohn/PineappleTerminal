@@ -1,14 +1,12 @@
 ﻿using GorillaExtensions;
 using GorillaTag;
-using PineappleMod.Tools;
 using System;
 using System.Collections;
-using System.ComponentModel;
 using UnityEngine;
 
 namespace PineappleMod.Console
 {
-    public class Key : MonoBehaviour // Decompiled from GorillaTag's code, please dont come after me.
+    public class Key : MonoBehaviour
     {
         public string characterString;
 
@@ -16,28 +14,24 @@ namespace PineappleMod.Console
 
         public float pressTime;
 
-        public bool functionKey;
-
-        public bool testClick;
-
-        public bool repeatTestClick;
-
         public float repeatCooldown = 2f;
 
         public Renderer ButtonRenderer;
 
         public ButtonColorSettings ButtonColorSettings = new ButtonColorSettings();
 
-        private float lastTestClick;
-
         private MaterialPropertyBlock propBlock;
 
-        public void Awake()
+        /*
+         * Thx monkemod and HanSolo1000Falcon for the help!
+         * */
+
+        public virtual void Awake()
         {
             ButtonColorSettings.PressedColor = Color.red;
             ButtonColorSettings.UnpressedColor = Color.white;
             ButtonColorSettings.PressedTime = 0.2f;
-
+             
             if (ButtonRenderer == null)
             {
                 ButtonRenderer = GetComponent<Renderer>();
@@ -46,11 +40,11 @@ namespace PineappleMod.Console
             propBlock = new MaterialPropertyBlock();
             pressTime = 0f;
 
-            gameObject.layer = LayerMask.NameToLayer("GorillaInteractible");
+            gameObject.layer = GorillaTagger.Instance.rightHandTriggerCollider.layer; // Layer 18 doesnt work (GorillaInteractable)
             gameObject.GetOrAddComponent<BoxCollider>().isTrigger = true;
         }
 
-        protected void OnTriggerEnter(Collider collider)
+        protected virtual void OnTriggerEnter(Collider collider)
         {
             GorillaTriggerColliderHandIndicator component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
             
@@ -63,14 +57,14 @@ namespace PineappleMod.Console
             }
         }
 
-        public void TestClick() {
+        public virtual void TestClick() {
             PressButtonColourUpdate();
             GorillaTagger.Instance.StartVibration(false, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
             GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, false, 0.1f);
             OnButtonPressedEvent?.Invoke(characterString);
         }
 
-        public void PressButtonColourUpdate()
+        public virtual void PressButtonColourUpdate()
         {
             propBlock.SetColor("_BaseColor", Color.red);
             propBlock.SetColor("_Color", Color.red);
