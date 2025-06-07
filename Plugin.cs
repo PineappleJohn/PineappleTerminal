@@ -26,17 +26,14 @@ namespace PineappleMod
             GorillaTagger.OnPlayerSpawned(OnGameInit);
         }
 
-        /*public void OnEnable() {
-            MenuManager.instance.EnableMenuCallbacks();
-
-            //ConsoleManager.Instance.console.SetActive(MenuManager.instance.menuWasOn);
-            //ConsoleManager.Instance.keyboard.SetActive(MenuManager.instance.menuWasOn);
+        public void OnEnable() {
+            GestureTracker.Instance.rightGrip.OnReleased += MenuManager.instance.ToggleMenu;
         }
 
         public void OnDisable() {
-            MenuManager.instance.DisableMenuCallbacks();
-            MenuManager.instance.DisableMenu(null);
-        }*/
+            GestureTracker.Instance.rightGrip.OnReleased -= MenuManager.instance.ToggleMenu;
+            MenuManager.instance.DisableMenu();
+        }
 
 
         public void OnGameInit() // Lots of try/catch blocks so i can see if things init properly, might remove later
@@ -79,7 +76,10 @@ namespace PineappleMod
                 Logging.Fatal("Failed to load asset bundle! ", e);
             }
         }
-
+        /// <summary>
+        /// DEPRECATED, DO NOT USE
+        /// </summary>
+        /// <returns></returns>
         public Vector3 getConsoleScale() {
             return Vector3.one * 0.05406467f;
         }

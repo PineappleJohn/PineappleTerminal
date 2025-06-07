@@ -31,7 +31,7 @@ namespace PineappleMod.Console
                 value = " ";
 
             ButtonColorSettings.PressedColor = Color.red;
-            ButtonColorSettings.UnpressedColor = Color.white;
+            ButtonColorSettings.UnpressedColor = Plugin.Instance.pineappleBundle.LoadAsset<Material>("m_Button").color;
             ButtonColorSettings.PressedTime = 0.2f;
 
             if (ButtonRenderer == null)

@@ -48,7 +48,6 @@ namespace PineappleMod.Console
 
             if (!console || !consoleText || !keyboard)
             {
-                ErrorOccur(new object[] { console, consoleText, keyboard, 37 });
                 return;
             }
 
@@ -154,11 +153,11 @@ namespace PineappleMod.Console
             }
         }
 
-        public void ErrorOccur(object[] args)
-        {
-            Logging.Fatal($"An error occured with ConsoleManager, more details {args}");
-        }
-
+        /// <summary>
+        /// Handles the key press event for the console keys.
+        /// </summary>
+        /// <param name="key">The specific key pressed, this can be null</param>
+        /// <param name="value">The value to add to the input</param>
         public void OnKeyPressed(Key key, string value)
         {
             value = shiftPressed ? value.ToUpper() : value.ToLower();
@@ -167,7 +166,11 @@ namespace PineappleMod.Console
 
             if (shiftPressed) OnShiftPressed();
         }
-
+        /// <summary>
+        /// Removes the latest character entry in the input. This is safe, it keeps the prompt ("> ") intact and only removes the last character of the input text. 
+        /// </summary>
+        /// <param name="key">Not used</param>
+        /// <param name="value">Not used</param>
         public void OnBackspacePressed(Key key = null, string value = "")
         {
             if (consoleText.text.Length > 1)
@@ -175,7 +178,11 @@ namespace PineappleMod.Console
                 consoleText.text = consoleText.text.Substring(0, consoleText.text.Length - 1);
             }
         }
-
+        /// <summary>
+        /// Toggles the shift state, changing the text case of the keys accordingly. You can use this in a script to automaticaly change case.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="value"></param>
         public void OnShiftPressed(Key arg = null, string value = "")
         {
             shiftPressed = !shiftPressed;
@@ -185,13 +192,12 @@ namespace PineappleMod.Console
                 key.GetComponentInChildren<TextMeshPro>().text = shiftPressed ? key.name.ToUpper() : key.name.ToLower();
             }
         }
-
-        public Type[] namespaces = {
-            typeof(RoomNamespace),
-            typeof(DebuggingNamespace)
-        };
-
-        public void RunAndParseCommand(Key key, string value = "")
+        /// <summary>
+        /// Runs the command and parses the input from the console. Value is not used, its a placeholder for key.cs actions, set the console text instead.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void RunAndParseCommand(Key key = null, string value = "")
         {
             // Only parse if there is actual input after the prompt
             var input = consoleText.text.TrimStart('>', ' ');
@@ -200,11 +206,7 @@ namespace PineappleMod.Console
 
             try
             {
-                var namespaceInstances = namespaces
-                    .Select(t => Activator.CreateInstance(t))
-                    .OfType<Namespace>();
-
-                Parser parser = new Parser(namespaceInstances);
+                Parser parser = new Parser();
                 var result = parser.ParseAndExecute(input);
                 Logging.Info($"Command executed: {input} - Result: {result}");
             }

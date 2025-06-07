@@ -19,6 +19,7 @@ namespace PineappleMod.Menu
 
         public void Setup()
         {
+            Destroy(Plugin.Instance.console.transform.Find("Menu"));
             GestureTracker.Instance.rightGrip.OnReleased += ToggleMenu;
         }
 

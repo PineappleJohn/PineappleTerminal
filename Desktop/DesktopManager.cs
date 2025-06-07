@@ -41,11 +41,7 @@ namespace PineappleMod.Desktop
 
             if (GUILayout.Button("Run"))
             {
-                var namespaceInstances = ConsoleManager.Instance.namespaces
-                    .Select(t => Activator.CreateInstance(t))
-                    .OfType<Namespace>();
-
-                Parser parser = new Parser(namespaceInstances);
+                Parser parser = new Parser();
                 Logging.Info(parser.ParseAndExecute(input));
                 input = "";
                 focusInput = true; // Set focus to input field after running

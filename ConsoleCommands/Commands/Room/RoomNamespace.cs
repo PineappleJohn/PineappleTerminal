@@ -5,15 +5,12 @@ namespace PineappleMod.ConsoleCommands.Commands.Room
 {
     public class RoomNamespace : Namespace
     {
-        public override Dictionary<string, Type> GetCommands() => new Dictionary<string, Type>
-       {
-           { "disconnect", typeof(Disconnect) }
-       };
-
-        public override Command GetCommand(string name)
-        {
-            return base.GetCommand(name);
-        }
+        public Disconnect disconnect => NamespaceObject.AddComponent<Disconnect>();
+        public override Dictionary<string, Command> Commands =>
+            new Dictionary<string, Command>
+            {
+                { "disconnect", Disconnect.instance }
+            };
 
         public override string GetNamespaceName()
         {
