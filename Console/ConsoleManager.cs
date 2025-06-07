@@ -4,10 +4,6 @@ using UnityEngine;
 using PineappleMod.Tools;
 using System;
 using GorillaExtensions;
-using PineappleMod.ConsoleCommands;
-using System.Linq;
-using PineappleMod.ConsoleCommands.Commands.Room;
-using PineappleMod.ConsoleCommands.Commands.Debug;
 using System.Collections;
 
 namespace PineappleMod.Console
@@ -212,6 +208,10 @@ namespace PineappleMod.Console
             {
                 Parser parser = new Parser();
                 var result = parser.ParseAndExecute(input);
+                if (result != "Command found!")
+                {
+                    returnText.text = $"Error: {result}";
+                }
                 Logging.Info($"Command executed: {input} - Result: {result}");
             }
             catch (Exception ex)
@@ -227,7 +227,12 @@ namespace PineappleMod.Console
 
         public IEnumerator clearCache()
         {
-            yield return new WaitForSeconds(1.5f);
+            if (Configuration.cacheClearTime.Value < 0)
+            {
+                returnText.text = "";
+                yield break;
+            }
+            yield return new WaitForSeconds(Configuration.cacheClearTime.Value);
             if (commandsQued > 1) yield break;
             commandsQued--;
             returnText.text = "";

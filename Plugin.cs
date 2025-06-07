@@ -38,6 +38,7 @@ namespace PineappleMod
 
         public void OnGameInit() // Lots of try/catch blocks so i can see if things init properly, might remove later
         {
+            Configuration.Init(Config);
             Logging.Init();
             Logging.Info("PineappleMod is starting up...");
             Logging.Info("Attempting to create console and menu objects...");
