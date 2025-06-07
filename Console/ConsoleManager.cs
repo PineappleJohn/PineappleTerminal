@@ -8,6 +8,7 @@ using PineappleMod.ConsoleCommands;
 using System.Linq;
 using PineappleMod.ConsoleCommands.Commands.Room;
 using PineappleMod.ConsoleCommands.Commands.Debug;
+using System.Collections;
 
 namespace PineappleMod.Console
 {
@@ -192,6 +193,9 @@ namespace PineappleMod.Console
                 key.GetComponentInChildren<TextMeshPro>().text = shiftPressed ? key.name.ToUpper() : key.name.ToLower();
             }
         }
+
+        int commandsQued = 0;
+
         /// <summary>
         /// Runs the command and parses the input from the console. Value is not used, its a placeholder for key.cs actions, set the console text instead.
         /// </summary>
@@ -217,6 +221,16 @@ namespace PineappleMod.Console
             }
 
             consoleText.text = "> ";
+            commandsQued++;
+            StartCoroutine(clearCache());
+        }
+
+        public IEnumerator clearCache()
+        {
+            yield return new WaitForSeconds(1.5f);
+            if (commandsQued > 1) yield break;
+            commandsQued--;
+            returnText.text = "";
         }
 
         // Command Structure

@@ -1,5 +1,6 @@
 ﻿using PineappleMod.Console.Command;
 using PineappleMod.ConsoleCommands;
+using PineappleMod.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,9 @@ namespace PineappleMod.Console
             string commandName = tokens[1];
             string[] args = tokens.Skip(2).ToArray();
 
-            if (!_namespaces.TryGetValue(nsName, out var ns)) return $"Invalid source {ns} : {nsName} : DICTIONARY <{_namespaces.Keys}, {_namespaces.Values}";
+            if (!_namespaces.TryGetValue(nsName, out var ns)) return $"No namespace found!";
 
             if (!ns.GetCommands().TryGetValue(commandName, out var commandType)) return "No command found!";
-
             var command = ns.GetCommands()[commandName];
 
             command.Execute(args);
