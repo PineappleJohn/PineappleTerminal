@@ -10,8 +10,6 @@ namespace PineappleMod.Menu
     public class MenuManager : MonoBehaviour
     {
         public static MenuManager instance;
-        public GameObject menu;
-        //protected void Start() => instance = this;
 
         protected void Start()
         {
@@ -21,45 +19,28 @@ namespace PineappleMod.Menu
 
         public void Setup()
         {
-            menu = Plugin.Instance.console.transform.Find("Menu").gameObject;
-            menu.transform.SetParent(GorillaTagger.Instance.leftHandTransform, false);
-
-
-            var button = menu.transform.Find("KeyboardButton").AddComponent<Button>();
-            var renderer = button.GetComponent<MeshRenderer>();
-            renderer.SetMaterials(new List<Material>() {
-                Plugin.Instance.pineappleBundle.LoadAsset<Material>("Materials/Material/m_Button") });
-            renderer.material.shader = Shader.Find("GorillaTag/UberShader");
-
-
-            var anotherRen = menu.GetComponent<MeshRenderer>();
-            anotherRen.SetMaterials(new List<Material>() {
-                Plugin.Instance.pineappleBundle.LoadAsset<Material>("Materials/Material/Black Material"), Plugin.Instance.pineappleBundle.LoadAsset<Material>("Materials/Material/m_Menu Outer") });
-            anotherRen.materials[0].shader = Shader.Find("GorillaTag/UberShader");
-            anotherRen.materials[1].shader = Shader.Find("GorillaTag/UberShader");
-
-
-            button.onPress = (tr) => {
-                ConsoleManager.Instance.console.SetActive(!ConsoleManager.Instance.console.activeSelf);
-                ConsoleManager.Instance.keyboard.SetActive(!ConsoleManager.Instance.keyboard.activeSelf);
-            };
-
-            menu.transform.localScale = Plugin.Instance.getConsoleScale();
-            menu.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-            GestureTracker.Instance.leftGrip.OnPressed += EnableMenu;
-            GestureTracker.Instance.leftGrip.OnReleased += DisableMenu;
-            Logging.Info("MenuManager started, menu initialized and button added.");
-            menu.SetActive(false);
+            GestureTracker.Instance.rightGrip.OnReleased += ToggleMenu;
         }
 
-        public void EnableMenu(InputTracker trakker)
+        public void ToggleMenu(InputTracker t)
+        {
+            if (ConsoleManager.Instance.console.activeSelf)
+            {
+                DisableMenu();
+            }
+            else
+            {
+                EnableMenu();
+            }
+        }
+
+        public void EnableMenu()
         {
             ConsoleManager.Instance.console.SetActive(true);
             ConsoleManager.Instance.keyboard.SetActive(true);
         }
 
-        public void DisableMenu(InputTracker takker)
+        public void DisableMenu()
         {
             ConsoleManager.Instance.console.SetActive(false);
             ConsoleManager.Instance.keyboard.SetActive(false);

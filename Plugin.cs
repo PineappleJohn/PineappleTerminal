@@ -4,6 +4,7 @@ using PineappleMod.Tools;
 using System;
 using PineappleMod.Menu;
 using PineappleMod.Console;
+using PineappleMod.Desktop;
 
 namespace PineappleMod
 {
@@ -53,6 +54,10 @@ namespace PineappleMod
 
                 m_Gesture = new GameObject("PineappleGestureTracker");
                 m_Gesture.AddComponent<GestureTracker>();
+
+#if DEBUG
+                new GameObject("PineappleDebugManager").AddComponent<DesktopManager>();
+#endif
 
                 Logging.Info("Console and menu objects created / init success");
             }

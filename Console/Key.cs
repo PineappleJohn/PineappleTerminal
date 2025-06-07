@@ -1,5 +1,8 @@
 ﻿using GorillaExtensions;
+using GorillaLocomotion.Climbing;
 using GorillaTag;
+using Photon.Pun;
+using PineappleMod.Tools;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,61 +11,67 @@ namespace PineappleMod.Console
 {
     public class Key : MonoBehaviour
     {
-        public string characterString;
-
-        public Action<string> OnButtonPressedEvent;
-
-        public float pressTime;
-
-        public float repeatCooldown = 2f;
-
+        public Action<Key, string> OnPressed;
         public Renderer ButtonRenderer;
 
         public ButtonColorSettings ButtonColorSettings = new ButtonColorSettings();
 
-        private MaterialPropertyBlock propBlock;
+        public float debounceTime = 0.25f;
 
-        /*
-         * Thx monkemod and HanSolo1000Falcon for the help!
-         * */
+        public float touchTime;
+
+        private MaterialPropertyBlock propBlock;
+        public string value;
 
         public virtual void Awake()
         {
+            if (gameObject.name != "Space")
+                value = gameObject.name;
+            else
+                value = " ";
+
             ButtonColorSettings.PressedColor = Color.red;
             ButtonColorSettings.UnpressedColor = Color.white;
             ButtonColorSettings.PressedTime = 0.2f;
-             
+
             if (ButtonRenderer == null)
             {
                 ButtonRenderer = GetComponent<Renderer>();
             }
 
             propBlock = new MaterialPropertyBlock();
-            pressTime = 0f;
-
-            gameObject.layer = GorillaTagger.Instance.rightHandTriggerCollider.layer; // Layer 18 doesnt work (GorillaInteractable)
-            gameObject.GetOrAddComponent<BoxCollider>().isTrigger = true;
         }
 
-        protected virtual void OnTriggerEnter(Collider collider)
+        protected void OnTriggerEnter(Collider collider)
         {
-            if (collider.gameObject == (GorillaTagger.Instance.leftHandTriggerCollider || GorillaTagger.Instance.rightHandTriggerCollider))
+            if (!base.enabled || !(touchTime + debounceTime < Time.time) || collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() == null)
             {
-                var component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
-                PressButtonColourUpdate();
+                return;
+            }
+
+            touchTime = Time.time;
+            GorillaTriggerColliderHandIndicator component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
+            ButtonActivationWithHand(component.isLeftHand);
+            if (!(component == null))
+            {
+                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, component.isLeftHand, 0.05f);
                 GorillaTagger.Instance.StartVibration(component.isLeftHand, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
-                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, component.isLeftHand, 0.1f);
-                OnButtonPressedEvent?.Invoke(characterString);
             }
         }
 
-        public virtual void TestClick() {
+        public void ButtonActivationWithHand(bool isLeftHand)
+        {
             PressButtonColourUpdate();
+            OnPressed?.Invoke(this, value);
+        }
+        public virtual void TestClick()
+        {
             GorillaTagger.Instance.StartVibration(false, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
             GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(66, false, 0.1f);
-            OnButtonPressedEvent?.Invoke(characterString);
+            OnPressed?.Invoke(this, value);
         }
 
+        float pressTime = 0f;
         public virtual void PressButtonColourUpdate()
         {
             propBlock.SetColor("_BaseColor", Color.red);
@@ -84,3 +93,4 @@ namespace PineappleMod.Console
         }
     }
 }
+//[Info   :PineappleMod] (Key.OnTriggerEnter()) GorillaHandClimber (UnityEngine.SphereCollider) GorillaHandClimber

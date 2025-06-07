@@ -279,7 +279,6 @@ namespace PineappleMod.Tools
         public bool rightControllerStickButton, leftControllerStickButton;
         public Vector2 rightControllerStickAxis, leftControllerStickAxis;
         public static ControllerInputPollerExt Instance;
-        bool steam;
 
         public ControllerInputPollerExt()
         {
