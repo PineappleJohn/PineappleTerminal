@@ -6,11 +6,11 @@ You are able to make addons for it, adding more commands, namespaces, and functi
 **How to install:** <br>
 > Download the Dll from the latest release and place it in the plugins folder of Gorilla Tag. <br>
 > Run the game. <br>
-** How to use:*
+** How to use:* <br>
 > Open the console by <Insert Controls here> <br>
 > Close the console by <Insert Controls here> <br>
-> Run commands by typing them in the following format and then clicking enter:
-```<Namespace> [Command] (Arguments)```
+> Run commands by typing them in the following format and then clicking enter: <br>
+```<Namespace> [Command] (Arguments)``` <br>
 Do not include symbols.
 # For developers
 Addons are currently in development...
