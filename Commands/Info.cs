@@ -51,6 +51,7 @@ namespace PineappleMod.Commands
     public class PlayerColour : Command
     {
         public override int RequiredArgs => 3;
+        string output = string.Empty;
         public override void OnExecute(string[] args)
         {
             int red = int.Parse(args[0]);
@@ -63,12 +64,15 @@ namespace PineappleMod.Commands
             GorillaTagger.Instance.UpdateColor(red, green, blue);
             PlayerPrefs.Save();
 
-            GorillaTagger.Instance.myVRRig.SendRPC("RPC_InitializeNoobMaterial", Photon.Pun.RpcTarget.All, new object[] { red, green, blue });
+            if (GorillaComputer.instance.friendJoinCollider.playerIDsCurrentlyTouching.Contains(PhotonNetwork.LocalPlayer.UserId) || CosmeticWardrobeProximityDetector.IsUserNearWardrobe(PhotonNetwork.LocalPlayer.UserId))
+                GorillaTagger.Instance.myVRRig.SendRPC("RPC_InitializeNoobMaterial", Photon.Pun.RpcTarget.All, new object[] { red, green, blue });
+            else
+                output = "You must be near a computer to change your colour";
         }
 
         public override string GetCommandName() => "colour";
 
-        public override string GetOutput() => "Set color";
+        public override string GetOutput() => output == string.Empty ? "Set color" : output;
     }
 
     public class PlayerName : Command
@@ -98,7 +102,7 @@ namespace PineappleMod.Commands
         public override string GetOutput() => "Set name";
     }
 
-    public class ModChecker : Command
+    public class ModChecker : Command // Husky this is a WIP, I am aware it doesn't work yet
     {
         public string[] mods = new string[]
         {

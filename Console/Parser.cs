@@ -69,6 +69,7 @@ namespace PineappleMod.Console
 
             Logging.Info(command, command.GetCommandName());
             if (!command.Clear) ConsoleManager.Instance.dontClearThisCommand = true;
+            if (!command.Enabled) return $"Command '{command.GetCommandName()}' is disabled.";
             command.BackgroundExecution(args);
             return $"$ {command.GetOutput().ToUpper()}";
         }
@@ -78,6 +79,8 @@ namespace PineappleMod.Console
         public abstract void OnExecute(string[] args);
         public abstract string GetCommandName();
         public abstract string GetOutput();
+
+        public virtual bool Enabled => true;
         /// <summary>
         /// If true, the console will clear after this command is executed.
         /// </summary>
