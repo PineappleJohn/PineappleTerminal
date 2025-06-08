@@ -7,16 +7,22 @@ using UnityEngine;
 
 namespace PineappleMod.Console
 {
-    public class Parser
+    public class Parser : MonoBehaviour
     {
-        public Dictionary<string, Dictionary<string, Command>> _namespaces = new Dictionary<string, Dictionary<string, Command>> {
+        public static Parser Instance { get; private set; }
+        public void Awake()
+        {
+            Instance = this;
+        }
+        public Dictionary<string, Dictionary<string, Command>> _namespaces = new Dictionary<string, Dictionary<string, Command>> { // default commands
             {"debug", new Dictionary<string, Command>() {{
                     "test", new Commands.Debug()
             }}},
             {"Room", new Dictionary<string, Command>() {
                 { "disconnect", new Commands.Room.Disconnect() },
-                {"join", new Commands.Room.Join() },
-                { "info", new Commands.RoomInfo() }
+                //{"join", new Commands.Room.Join() },
+                { "info", new Commands.RoomInfo() },
+                { "gm", new Commands.Room.Gamemode() }
             }},
             {"Player", new Dictionary<string, Command>() {
                 { "info", new Commands.PlayerInfo() },
@@ -27,6 +33,18 @@ namespace PineappleMod.Console
                 { "check", new Commands.ModChecker() }
             }}
         };
+
+        public void RegisterCommand(Command command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command), "Command cannot be null.");
+            if (!_namespaces.TryGetValue(command.Namespace, out var commands))
+            {
+                commands = new Dictionary<string, Command>();
+                _namespaces.Add(command.Namespace, commands);
+            }
+            commands.Add(command.GetCommandName(), command);
+        }
+
 
 
         /// <summary>  
@@ -56,7 +74,7 @@ namespace PineappleMod.Console
         }
     }
 
-    public abstract class Command : MonoBehaviour {
+    public abstract class Command {
         public abstract void OnExecute(string[] args);
         public abstract string GetCommandName();
         public abstract string GetOutput();
@@ -71,5 +89,7 @@ namespace PineappleMod.Console
                 throw new ArgumentException($"Expected at least {RequiredArgs} arguments, but only got {args.Length}.");
             OnExecute(args);
         }
+
+        public virtual string Namespace => "";
     }
 }

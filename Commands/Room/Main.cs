@@ -18,26 +18,6 @@ namespace PineappleMod.Commands.Room
         public override string GetOutput() => "Disconnected";
     }
 
-    public class Join : Command
-    {
-        string code;
-        public override void OnExecute(string[] args)
-        {
-            code = args[0];
-            StartCoroutine(JoinCoroutine());
-        }
-        public override string GetCommandName() => "join";
-        public override string GetOutput() => $"Attempting to join {code}";
-
-        IEnumerator JoinCoroutine()
-        {
-            if (NetworkSystem.Instance.InRoom)
-                NetworkSystem.Instance.ReturnToSinglePlayer();
-            yield return new WaitForSeconds(1.5f);
-            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(code, JoinType.Solo);
-        }
-    }
-
     public class Gamemode : Command
     {
         public string[] gamemodes = { "Casual", "Infection", "FreezeTag", "Guardian" };

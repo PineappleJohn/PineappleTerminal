@@ -34,9 +34,12 @@ namespace PineappleMod.Commands
         public override string GetCommandName() => "info";
         public override string GetOutput()
         {
+            
             if (args.Length == 0)
                 return "No player specified.";
-            var player = Formatting.FormatPlayerlist(NetworkSystem.Instance.AllNetPlayers).TryGetValue(args[0].ToUpper(), out NetPlayer plr);
+            /*
+            var player = Formatting.FormatPlayerlist(NetworkSystem.Instance.AllNetPlayers).TryGetValue(args[0].ToUpper(), out NetPlayer plr);*/
+            var plr = Formatting.GetNetPlayerFromName(args[0]);
             if (plr == null)
                 return $"Player '{args[0]}' not found.";
             return $"ID: {plr.UserId}\nIs Master: {plr.IsMasterClient}\nColour: {Formatting.FormatColour(GorillaParent.instance.vrrigs[plr.ActorNumber].playerColor)}";
@@ -102,7 +105,7 @@ namespace PineappleMod.Commands
             "PINEAPPLEMOD",
             "GORILLAINFOWATCH",
             "GRATE",
-            "GORILLACRAFT",
+            "GC",
             "GPRONOUNS",
             "CHEESEISGOUDA" // WhosThatMonke
         };

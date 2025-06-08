@@ -3,6 +3,8 @@ using UnityEngine;
 using PineappleMod.Tools;
 using System;
 using PineappleMod.Menu;
+using PineappleMod.Commands._3rdParty;
+using PineappleMod.Console;
 
 namespace PineappleMod
 {
@@ -44,6 +46,7 @@ namespace PineappleMod
             {
                 m_Console = new GameObject("PineappleConsoleManager");
                 m_Console.AddComponent<Console.ConsoleManager>();
+                m_Console.AddComponent<Parser>();
 
                 m_Menu = new GameObject("PineappleMenuManager"); // These namespaces are satisfying
                 m_Menu.AddComponent<Menu.MenuManager>();
@@ -51,9 +54,7 @@ namespace PineappleMod
                 m_Gesture = new GameObject("PineappleGestureTracker");
                 m_Gesture.AddComponent<GestureTracker>();
 
-#if DEBUG
-                new GameObject("PineappleDebugManager").AddComponent<DesktopManager>();
-#endif
+                new GameObject("Pineapples").AddComponent<Pineapples>();
 
                 Logging.Info("Console and menu objects created / init success");
             }

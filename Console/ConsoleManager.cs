@@ -205,7 +205,9 @@ namespace PineappleMod.Console
 
             try
             {
-                Parser parser = new Parser();
+                Parser parser;
+                if (Parser.Instance == null) parser = new Parser();
+                else parser = Parser.Instance;
                 var result = parser.ParseAndExecute(input);
                 if (!result.Contains("$ "))
                 {

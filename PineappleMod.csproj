@@ -302,4 +302,8 @@
       <HintPath>$(GameAssemblyPath)\websocket-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Marketing\" />
+  </ItemGroup>
 </Project>
