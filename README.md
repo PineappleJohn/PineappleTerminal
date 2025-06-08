@@ -31,8 +31,7 @@ You are able to make addons for it, adding more commands, namespaces, and functi
 
 **How to use:** <br>
 
-> Open the console by <Insert Controls here> <br>
-> Close the console by <Insert Controls here> <br>
+> Toggle the console by releasing right grip <br>
 > Run commands by typing them in the following format and then clicking enter: <br>
 ```<Namespace> [Command] (Arguments)``` <br>
 Do not include symbols.
