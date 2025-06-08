@@ -37,6 +37,6 @@ You are able to make addons for it, adding more commands, namespaces, and functi
 ```<Namespace> [Command] (Arguments)``` <br>
 Do not include symbols.
 # For developers
-Addons are currently in development, once finished documentation will be published in a wiki. <br> <br> <br>
+Read the [wiki](https://github.com/PineappleJohn/PineappleTerminal/wiki)! <br> <br> <br>
 Terminal in-game
 ![20B5F61](https://github.com/user-attachments/assets/9e691447-52d7-4a1d-a6a7-5c434c8b9e7a)
