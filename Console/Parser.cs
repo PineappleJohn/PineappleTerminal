@@ -22,6 +22,9 @@ namespace PineappleMod.Console
                 { "info", new Commands.PlayerInfo() },
                 { "colour", new Commands.PlayerColour() },
                 { "name", new Commands.PlayerColour() }
+            }},
+            {"Mods", new Dictionary<string, Command>() {
+                { "check", new Commands.ModChecker() }
             }}
         };
 
@@ -64,7 +67,7 @@ namespace PineappleMod.Console
         public virtual int RequiredArgs => 0;
 
         public void BackgroundExecution(string[] args) {
-            if (args.Length < RequiredArgs)
+            if (RequiredArgs != 0 && args.Length < RequiredArgs)
                 throw new ArgumentException($"Expected at least {RequiredArgs} arguments, but only got {args.Length}.");
             OnExecute(args);
         }

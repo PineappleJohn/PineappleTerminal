@@ -1,8 +1,6 @@
-﻿using PineappleMod.Console;
+﻿using GorillaLocomotion;
+using PineappleMod.Console;
 using PineappleMod.Tools;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace PineappleMod.Menu
@@ -10,6 +8,8 @@ namespace PineappleMod.Menu
     public class MenuManager : MonoBehaviour
     {
         public static MenuManager instance;
+        Vector3 savedVelocity;
+        bool menuon = false;
 
         protected void Start()
         {
@@ -19,7 +19,7 @@ namespace PineappleMod.Menu
 
         public void Setup()
         {
-            Destroy(Plugin.Instance.console.transform.Find("Menu"));
+            Destroy(Plugin.Instance.console.transform.Find("Menu").gameObject);
             GestureTracker.Instance.rightGrip.OnReleased += ToggleMenu;
         }
 
@@ -35,16 +35,27 @@ namespace PineappleMod.Menu
             }
         }
 
+        public void Update()
+        {
+            if (menuon)
+                GorillaTagger.Instance.rigidbody.AddForce(-UnityEngine.Physics.gravity * GorillaTagger.Instance.rigidbody.mass * GTPlayer.Instance.scale);
+        }
+
         public void EnableMenu()
         {
+            menuon = true;
+            savedVelocity = GorillaTagger.Instance.rigidbody.velocity;
+            GorillaTagger.Instance.rigidbody.velocity = Vector3.zero;
             ConsoleManager.Instance.console.SetActive(true);
             ConsoleManager.Instance.keyboard.SetActive(true);
         }
 
         public void DisableMenu()
         {
+            menuon = false;
             ConsoleManager.Instance.console.SetActive(false);
             ConsoleManager.Instance.keyboard.SetActive(false);
+            GorillaTagger.Instance.rigidbody.AddForce(savedVelocity);
         }
     }
 }

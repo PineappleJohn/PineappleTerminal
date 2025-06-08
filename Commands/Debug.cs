@@ -6,7 +6,7 @@ namespace PineappleMod.Commands
 {
     public class Debug : Command
     {
-        public override void Execute(string[] args)
+        public override void OnExecute(string[] args)
         {
             Logging.Info("Debug command executed with args: " + string.Join(", ", args));
         }

@@ -69,6 +69,7 @@ namespace PineappleMod.Commands
 
     public class PlayerName : Command
     {
+        public override int RequiredArgs => 1;
         public override void OnExecute(string[] args)
         {
             string priorname = GorillaComputer.instance.currentName;

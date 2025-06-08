@@ -1,6 +1,5 @@
-﻿using System;
+﻿using GorillaNetworking;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace PineappleMod.Tools
@@ -10,9 +9,38 @@ namespace PineappleMod.Tools
         public static string FormatGamemode(string gm) 
         {
             bool modded = gm.Contains("MODDED_");
-            string formattedGamemode = gm.Replace("MODDED_", "");
+            string formattedGamemode = gm.Replace("MODDED_", "").Replace("DEFAULT", "");
 
             return $"{(modded ? "Modded" : "")} {formattedGamemode}";
+        }
+
+        public static NetPlayer GetNetPlayerFromName(string name)
+        {
+            name = name.ToUpper();
+            if (string.IsNullOrEmpty(name) || !NetworkSystem.Instance.InRoom) return null;
+            var netplayers = NetworkSystem.Instance.AllNetPlayers;
+            if (name == GorillaComputer.instance.currentName) return NetworkSystem.Instance.LocalPlayer;
+            if (netplayers == null || netplayers.Length == 0) return null;
+
+            FormatPlayerlist(netplayers).TryGetValue(name, out NetPlayer player);
+            return player;
+        }
+
+        public static VRRig GetVRRigFromName(string name)
+        {
+            name = name.ToUpper();
+            if (string.IsNullOrEmpty(name) || !NetworkSystem.Instance.InRoom) return null;
+            var rigs = GorillaParent.instance.vrrigs;
+            if (name == GorillaComputer.instance.currentName) return GorillaTagger.Instance.offlineVRRig;
+
+            foreach (var rig in rigs)
+            {
+                if (rig.playerText1.text.ToUpper() == name || rig.playerText2.text.ToUpper() == name)
+                {
+                    return rig;
+                }
+            }
+            return null;
         }
 
         public static Dictionary<string, NetPlayer> FormatPlayerlist(NetPlayer[] players) 
