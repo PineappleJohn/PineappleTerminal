@@ -190,8 +190,7 @@ namespace PineappleMod.Console
             }
         }
 
-        int commandsQued = 0;
-
+        public bool dontClearThisCommand = false;
         /// <summary>
         /// Runs the command and parses the input from the console. Value is not used, its a placeholder for key.cs actions, set the console text instead.
         /// </summary>
@@ -208,9 +207,13 @@ namespace PineappleMod.Console
             {
                 Parser parser = new Parser();
                 var result = parser.ParseAndExecute(input);
-                if (result != "Command found!")
+                if (!result.Contains("$ "))
                 {
                     returnText.text = $"Error: {result}";
+                }
+                else
+                {
+                    returnText.text = result;
                 }
                 Logging.Info($"Command executed: {input} - Result: {result}");
             }
@@ -221,7 +224,11 @@ namespace PineappleMod.Console
             }
 
             consoleText.text = "> ";
-            commandsQued++;
+            if (dontClearThisCommand)
+            {
+                dontClearThisCommand = false;
+                return;
+            }
             StartCoroutine(clearCache());
         }
 
@@ -229,13 +236,11 @@ namespace PineappleMod.Console
         {
             if (Configuration.cacheClearTime.Value < 0)
             {
-                returnText.text = "";
+                returnText.text = "$ ";
                 yield break;
             }
             yield return new WaitForSeconds(Configuration.cacheClearTime.Value);
-            if (commandsQued > 1) yield break;
-            commandsQued--;
-            returnText.text = "";
+            returnText.text = "$ ";
         }
 
         // Command Structure

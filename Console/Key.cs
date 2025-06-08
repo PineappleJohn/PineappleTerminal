@@ -84,8 +84,8 @@ namespace PineappleMod.Console
                 yield return new WaitForSeconds(ButtonColorSettings.PressedTime);
                 if (pressTime != 0f && Time.time > ButtonColorSettings.PressedTime + pressTime)
                 {
-                    propBlock.SetColor("_BaseColor", Color.white);
-                    propBlock.SetColor("_Color", Color.white);
+                    propBlock.SetColor("_BaseColor", ButtonColorSettings.UnpressedColor);
+                    propBlock.SetColor("_Color", ButtonColorSettings.UnpressedColor);
                     ButtonRenderer.SetPropertyBlock(propBlock);
                     pressTime = 0f;
                 }

@@ -3,8 +3,6 @@ using UnityEngine;
 using PineappleMod.Tools;
 using System;
 using PineappleMod.Menu;
-using PineappleMod.Console;
-using PineappleMod.Desktop;
 
 namespace PineappleMod
 {
