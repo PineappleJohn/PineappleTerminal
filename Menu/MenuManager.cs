@@ -3,6 +3,8 @@ using PineappleMod.Console;
 using PineappleMod.Tools;
 using UnityEngine;
 
+using Player = GorillaLocomotion.GTPlayer;
+
 namespace PineappleMod.Menu
 {
     public class MenuManager : MonoBehaviour
@@ -37,15 +39,19 @@ namespace PineappleMod.Menu
 
         public void Update()
         {
-            if (menuon)
-                GorillaTagger.Instance.rigidbody.AddForce(-UnityEngine.Physics.gravity * GorillaTagger.Instance.rigidbody.mass * GTPlayer.Instance.scale);
+            if (menuon && NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            {
+                var rb = Player.Instance.bodyCollider.attachedRigidbody;
+                rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * Player.Instance.scale);
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 5);
+            }
         }
 
         public void EnableMenu()
         {
             menuon = true;
-            savedVelocity = GorillaTagger.Instance.rigidbody.velocity;
-            GorillaTagger.Instance.rigidbody.velocity = Vector3.zero;
+            savedVelocity = Player.Instance.bodyCollider.attachedRigidbody.velocity;
+            Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
             ConsoleManager.Instance.console.SetActive(true);
             ConsoleManager.Instance.keyboard.SetActive(true);
         }
@@ -55,7 +61,7 @@ namespace PineappleMod.Menu
             menuon = false;
             ConsoleManager.Instance.console.SetActive(false);
             ConsoleManager.Instance.keyboard.SetActive(false);
-            GorillaTagger.Instance.rigidbody.AddForce(savedVelocity);
+            Player.Instance.bodyCollider.attachedRigidbody.AddForce(savedVelocity, ForceMode.VelocityChange);
         }
     }
 }
