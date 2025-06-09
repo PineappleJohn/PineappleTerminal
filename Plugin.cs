@@ -5,6 +5,7 @@ using System;
 using PineappleMod.Menu;
 using PineappleMod.Commands._3rdParty;
 using PineappleMod.Console;
+using PineappleMod.Networking;
 
 namespace PineappleMod
 {
@@ -47,14 +48,10 @@ namespace PineappleMod
                 m_Console = new GameObject("PineappleConsoleManager");
                 m_Console.AddComponent<Console.ConsoleManager>();
                 m_Console.AddComponent<Parser>();
-
-                m_Menu = new GameObject("PineappleMenuManager"); // These namespaces are satisfying
-                m_Menu.AddComponent<Menu.MenuManager>();
-
-                m_Gesture = new GameObject("PineappleGestureTracker");
-                m_Gesture.AddComponent<GestureTracker>();
-
-                new GameObject("Pineapples").AddComponent<Pineapples>();
+                m_Console.AddComponent<Menu.MenuManager>();
+                m_Console.AddComponent<GestureTracker>();
+                m_Console.AddComponent<NetworkManager>();
+                m_Console.AddComponent<Pineapples>(); // Addons were originally called pineapples
 
                 Logging.Info("Console and menu objects created / init success");
             }

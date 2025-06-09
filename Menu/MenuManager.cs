@@ -1,4 +1,6 @@
 ﻿using GorillaLocomotion;
+using GorillaNetworking;
+using Photon.Pun;
 using PineappleMod.Console;
 using PineappleMod.Tools;
 using UnityEngine;
@@ -22,7 +24,7 @@ namespace PineappleMod.Menu
         public void Setup()
         {
             Destroy(Plugin.Instance.console.transform.Find("Menu").gameObject);
-            GestureTracker.Instance.rightGrip.OnReleased += ToggleMenu;
+            GestureTracker.Instance.rightSecondary.OnPressed += ToggleMenu;
         }
 
         public void ToggleMenu(InputTracker t)
@@ -39,7 +41,7 @@ namespace PineappleMod.Menu
 
         public void Update()
         {
-            if (menuon && NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            if (menuon)
             {
                 var rb = Player.Instance.bodyCollider.attachedRigidbody;
                 rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * Player.Instance.scale);
@@ -49,19 +51,29 @@ namespace PineappleMod.Menu
 
         public void EnableMenu()
         {
-            menuon = true;
-            savedVelocity = Player.Instance.bodyCollider.attachedRigidbody.velocity;
-            Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            {
+                menuon = true;
+                savedVelocity = Player.Instance.bodyCollider.attachedRigidbody.velocity;
+                Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+            }
             ConsoleManager.Instance.console.SetActive(true);
             ConsoleManager.Instance.keyboard.SetActive(true);
+
+            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", true);
         }
 
         public void DisableMenu()
         {
-            menuon = false;
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            {
+                menuon = false;
+                Player.Instance.bodyCollider.attachedRigidbody.AddForce(savedVelocity, ForceMode.VelocityChange);
+            }
             ConsoleManager.Instance.console.SetActive(false);
             ConsoleManager.Instance.keyboard.SetActive(false);
-            Player.Instance.bodyCollider.attachedRigidbody.AddForce(savedVelocity, ForceMode.VelocityChange);
+
+            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", false);
         }
     }
 }

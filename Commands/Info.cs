@@ -42,7 +42,7 @@ namespace PineappleMod.Commands
             var plr = Formatting.GetNetPlayerFromName(args[0]);
             if (plr == null)
                 return $"Player '{args[0]}' not found.";
-            return $"ID: {plr.UserId}\nIs Master: {plr.IsMasterClient}\nColour: {Formatting.FormatColour(GorillaParent.instance.vrrigs[plr.ActorNumber].playerColor)}";
+            return $"ID: {plr.UserId}\nIs Master: {plr.IsMasterClient}\nColour: {Formatting.FormatColour(GorillaParent.instance.vrrigDict[plr].playerColor)}";
         }
 
         public override bool Clear => false;
