@@ -1,5 +1,6 @@
 ﻿using GorillaNetworking;
 using PineappleMod.Console;
+using PineappleMod.Menu;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace PineappleMod.Commands.Room
         public override void OnExecute(string[] args)
         {
             NetworkSystem.Instance.ReturnToSinglePlayer();
+            MenuManager.instance.DisableMenu();
         }
 
         public override string GetCommandName() => "disconnect";

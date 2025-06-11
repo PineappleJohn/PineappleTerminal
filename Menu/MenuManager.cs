@@ -24,7 +24,7 @@ namespace PineappleMod.Menu
         public void Setup()
         {
             Destroy(Plugin.Instance.console.transform.Find("Menu").gameObject);
-            GestureTracker.Instance.rightSecondary.OnPressed += ToggleMenu;
+            GestureTracker.Instance.leftPrimary.OnPressed += ToggleMenu;
         }
 
         public void ToggleMenu(InputTracker t)
@@ -41,7 +41,7 @@ namespace PineappleMod.Menu
 
         public void Update()
         {
-            if (menuon)
+            if (menuon && NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
                 var rb = Player.Instance.bodyCollider.attachedRigidbody;
                 rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * Player.Instance.scale);
@@ -51,29 +51,23 @@ namespace PineappleMod.Menu
 
         public void EnableMenu()
         {
-            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
-            {
-                menuon = true;
-                savedVelocity = Player.Instance.bodyCollider.attachedRigidbody.velocity;
-                Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
-            }
+            if (!NetworkSystem.Instance.GameModeString.Contains("MODDED_")) return;
+            menuon = true;
+            savedVelocity = Player.Instance.bodyCollider.attachedRigidbody.velocity;
+            Player.Instance.bodyCollider.attachedRigidbody.velocity = Vector3.zero;
+            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", true);
             ConsoleManager.Instance.console.SetActive(true);
             ConsoleManager.Instance.keyboard.SetActive(true);
-
-            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", true);
         }
 
         public void DisableMenu()
         {
-            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
-            {
-                menuon = false;
-                Player.Instance.bodyCollider.attachedRigidbody.AddForce(savedVelocity, ForceMode.VelocityChange);
-            }
+            if (!NetworkSystem.Instance.GameModeString.Contains("MODDED_")) return;
+            menuon = false;
+            Player.Instance.bodyCollider.attachedRigidbody.AddForce(savedVelocity, ForceMode.VelocityChange);
+            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", false);
             ConsoleManager.Instance.console.SetActive(false);
             ConsoleManager.Instance.keyboard.SetActive(false);
-
-            PhotonNetwork.LocalPlayer.CustomProperties.AddOrUpdate("PineappleTerminal", false);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace PineappleMod
                 m_Console.AddComponent<Parser>();
                 m_Console.AddComponent<Menu.MenuManager>();
                 m_Console.AddComponent<GestureTracker>();
-                m_Console.AddComponent<NetworkManager>();
+                //m_Console.AddComponent<NetworkManager>();
                 m_Console.AddComponent<Pineapples>(); // Addons were originally called pineapples
 
                 Logging.Info("Console and menu objects created / init success");

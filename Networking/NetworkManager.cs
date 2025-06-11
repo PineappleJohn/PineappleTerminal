@@ -16,6 +16,8 @@ namespace PineappleMod.Networking
             NetworkSystem.Instance.OnPlayerLeft += OnPlayerLeftRoom;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += OnLeftRoom;
             NetworkSystem.Instance.OnMultiplayerStarted += OnJoinedRoom;
+
+            InvokeRepeating(nameof(CheckAllTerminals), 1f, 1f);
         }
 
         public void CheckAllTerminals() 
