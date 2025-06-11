@@ -39,3 +39,5 @@ Do not include symbols.
 Read the [wiki](https://github.com/PineappleJohn/PineappleTerminal/wiki)! <br> <br> <br>
 Terminal in-game
 ![20B5F61](https://github.com/user-attachments/assets/9e691447-52d7-4a1d-a6a7-5c434c8b9e7a)
+# What's next?
+A visual overhaul is in the works! It may not come out for a while, but when it does it will overhaul the commands (still having compatibility for old addons) and the visuals of the terminal.
