@@ -6,6 +6,7 @@ using PineappleMod.Menu;
 using PineappleMod.Commands._3rdParty;
 using PineappleMod.Console;
 using PineappleMod.Networking;
+using PineappleMod.Console.Slider;
 
 namespace PineappleMod
 {
@@ -47,6 +48,7 @@ namespace PineappleMod
             {
                 m_Console = new GameObject("PineappleConsoleManager");
                 m_Console.AddComponent<Console.ConsoleManager>();
+                m_Console.AddComponent<SliderSetup>();
                 m_Console.AddComponent<Parser>();
                 m_Console.AddComponent<Menu.MenuManager>();
                 m_Console.AddComponent<GestureTracker>();
@@ -67,6 +69,11 @@ namespace PineappleMod
                 console = Instantiate(pineappleBundle.LoadAsset<GameObject>("PineappleConsole"));
                 console.name = "PineappleConsole";
                 Logging.Info("Succesfully loaded asset bundle!");
+
+                if (!Configuration.openOnStart.Value)
+                {
+                    MenuManager.instance.DisableMenu();
+                }
             }
             catch (Exception e)
             {

@@ -5,6 +5,7 @@ using PineappleMod.Tools;
 using System;
 using GorillaExtensions;
 using System.Collections;
+using PineappleMod.Console.Slider;
 
 namespace PineappleMod.Console
 {
@@ -25,6 +26,7 @@ namespace PineappleMod.Console
         public GameObject enter;
         public GameObject space;
         public GameObject shift;
+        public GameObject pound;
 
         public Transform placeholder = new GameObject("AFHAUOHSGIOUHAG").transform;
 
@@ -93,6 +95,7 @@ namespace PineappleMod.Console
 
                     switch (child.name)
                     {
+                        case "#": pound = child; break;
                         case "Backspace": backspace = child; break;
                         case "Return": enter = child; break;
                         case "Shift": shift = child; break;
@@ -123,6 +126,9 @@ namespace PineappleMod.Console
             var enterKey = enter.GetComponent<Key>();
             enterKey.OnPressed += RunAndParseCommand;
 
+            var poundKey = pound.GetComponent<Key>();
+            poundKey.OnPressed += InsertNumber;
+
             consoleText.text = "> ";
             returnText.text = "";
             Logging.Info("Success!", 96);
@@ -150,6 +156,11 @@ namespace PineappleMod.Console
             }
         }
 
+        public void InsertNumber(Key key = null, string value = null)
+        {
+            consoleText.text += SliderSetup.Instance.sldr.value;
+        }
+
         /// <summary>
         /// Handles the key press event for the console keys.
         /// </summary>
@@ -157,11 +168,7 @@ namespace PineappleMod.Console
         /// <param name="value">The value to add to the input</param>
         public void OnKeyPressed(Key key, string value)
         {
-            value = shiftPressed ? value.ToUpper() : value.ToLower();
-
             consoleText.text += value;
-
-            if (shiftPressed) OnShiftPressed();
         }
         /// <summary>
         /// Removes the latest character entry in the input. This is safe, it keeps the prompt ("> ") intact and only removes the last character of the input text. 
@@ -182,12 +189,7 @@ namespace PineappleMod.Console
         /// <param name="value"></param>
         public void OnShiftPressed(Key arg = null, string value = "")
         {
-            shiftPressed = !shiftPressed;
-
-            foreach (GameObject key in keys)
-            {
-                key.GetComponentInChildren<TextMeshPro>().text = shiftPressed ? key.name.ToUpper() : key.name.ToLower();
-            }
+            Application.OpenURL("https://github.com/PineappleJohn/PineappleTerminal");
         }
 
         public bool dontClearThisCommand = false;

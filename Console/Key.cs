@@ -5,6 +5,7 @@ using Photon.Pun;
 using PineappleMod.Tools;
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace PineappleMod.Console
@@ -26,9 +27,13 @@ namespace PineappleMod.Console
         public virtual void Awake()
         {
             if (gameObject.name != "Space")
-                value = gameObject.name;
+            {
+                value = gameObject.name.ToUpper();
+                GetComponentInChildren<TextMeshPro>().text = value;
+            }
             else
                 value = " ";
+            
 
             ButtonColorSettings.PressedColor = Color.red;
             ButtonColorSettings.UnpressedColor = Plugin.Instance.pineappleBundle.LoadAsset<Material>("m_Button").color;
